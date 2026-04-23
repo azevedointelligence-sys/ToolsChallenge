@@ -7,8 +7,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Data
-@Getter
 @Builder
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransactionRequest {

@@ -3,15 +3,12 @@ package com.irae.toolschallenge.dto.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.irae.toolschallenge.domain.TransactionDescription;
 import com.irae.toolschallenge.domain.TransactionStatusEnum;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
+import lombok.*;
 
 @Data
 @Getter
-@Builder
 @AllArgsConstructor
+@Builder
 public class TransactionDescriptionResponse {
 
     @JsonProperty("valor")

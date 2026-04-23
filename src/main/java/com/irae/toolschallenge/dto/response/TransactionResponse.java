@@ -7,9 +7,8 @@ import lombok.*;
 
 @Data
 @Getter
-@Builder
 @AllArgsConstructor
-@NoArgsConstructor(force = true)
+@Builder
 public class TransactionResponse {
 
     @JsonProperty("cartao")

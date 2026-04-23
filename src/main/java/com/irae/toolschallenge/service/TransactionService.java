@@ -8,19 +8,23 @@ import com.irae.toolschallenge.dto.response.PaymentResponse;
 import com.irae.toolschallenge.dto.response.TransactionResponse;
 import com.irae.toolschallenge.exception.TransactionNotFoundException;
 import com.irae.toolschallenge.mapper.TransactionMapper;
+import com.irae.toolschallenge.repository.TransactionRepository;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@NoArgsConstructor(force = true)
 public class TransactionService {
 
     private final TransactionMapper mapper;
-
-    private final Map<String, Transaction> database = new ConcurrentHashMap<>();
+    private final TransactionRepository repository;
 
     public PaymentResponse processPayment(PaymentRequest request) {
 
@@ -35,18 +39,15 @@ public class TransactionService {
         transaction.getDescription().setNsu(generateNsu());
         transaction.getDescription().setAuthorizationCode(generateAuthorizationCode());
 
-        database.put(id, transaction);
+        repository.save(transaction);
 
         return mapper.toResponse(transaction);
     }
 
     public PaymentResponse cancelTransaction(String id) {
 
-        Transaction transaction = database.get(id);
-
-        if (transaction == null) {
-            throw new TransactionNotFoundException(id);
-        }
+        Transaction transaction = repository.findById(id)
+                .orElseThrow(() -> new TransactionNotFoundException(id));
 
         if (TransactionStatusEnum.CANCELADO.equals(transaction.getDescription().getStatus())) {
             throw new IllegalStateException("Esta transação já está cancelada.");
@@ -54,26 +55,21 @@ public class TransactionService {
 
         transaction.getDescription().cancel();
 
+        repository.save(transaction);
+
         return mapper.toResponse(transaction);
     }
 
     public TransactionResponse findTransactionById(String id) {
 
-        Transaction transaction = database.get(id);
-
-        if (transaction == null) {
-            throw new TransactionNotFoundException(id);
-        }
+        Transaction transaction = repository.findById(id)
+                .orElseThrow(() -> new TransactionNotFoundException(id));
 
         return mapper.toTransactionResponse(transaction);
     }
 
     public List<TransactionResponse> findAllTransactions() {
-
-        return database.values()
-                .stream()
-                .map(mapper::toTransactionResponse)
-                .toList();
+        return repository.findAll().stream().map(mapper::toTransactionResponse).collect(Collectors.toList());
     }
 
     private void validatePayment(Transaction transaction) {

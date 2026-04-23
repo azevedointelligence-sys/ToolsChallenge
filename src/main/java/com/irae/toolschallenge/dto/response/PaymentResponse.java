@@ -5,9 +5,8 @@ import lombok.*;
 
 @Data
 @Getter
-@Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@Builder
 public class PaymentResponse {
 
     @JsonProperty("transacao")
