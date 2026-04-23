@@ -3,15 +3,13 @@ package com.irae.toolschallenge.dto.response;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.irae.toolschallenge.domain.PaymentMethod;
 import com.irae.toolschallenge.domain.Transaction;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
+import lombok.*;
 
 @Data
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor(force = true)
 public class TransactionResponse {
 
     @JsonProperty("cartao")
@@ -32,4 +30,5 @@ public class TransactionResponse {
         this.description = new TransactionDescriptionResponse(transaction.getDescription());
         this.paymentMethod = transaction.getPaymentMethod();
     }
+
 }
